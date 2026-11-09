@@ -1,65 +1,41 @@
 "use strict";
 
-// Get references to all elements
-const buttons = document.querySelectorAll('.buttons button');
+// Get the container and all boxes
 const gameContainer = document.querySelector('.game-container');
+const box1 = document.getElementById('box1');
+const box2 = document.getElementById('box2');
+const box3 = document.getElementById('box3');
 
-// Initialize boxOrder array with default order
-let boxOrder = ['box1', 'box2', 'box3'];
+// Create an array to hold the actual DOM elements
+let boxes = [box1, box2, box3];
 
-// Create a reference map for quick access
-const boxes = {
-    box1: document.getElementById('box1'),
-    box2: document.getElementById('box2'),
-    box3: document.getElementById('box3')
-};
-
-// Add click event listeners to buttons
-buttons.forEach((button, index) => {
-    button.addEventListener('click', () => handleButtonClick(index + 1));
+// Button 1 -> Move Box 1 to position 0 (first)
+document.querySelectorAll('.buttons button')[0].addEventListener('click', () => {
+    moveBox(0, box1);
 });
 
-// Function that handles button clicks
-function handleButtonClick(buttonNumber) {
-    // Update the boxOrder array based on which button was clicked
-    switch(buttonNumber) {
-        case 1:
-            // Move box1 to index 0 (already there, no change)
-            if (boxOrder.indexOf('box1') !== 0) {
-                boxOrder.unshift('box1');
-                boxOrder.splice(boxOrder.indexOf('box1') + 1, 1);
-            }
-            break;
-            
-        case 2:
-            // Move box2 to index 1
-            const currentIndex = boxOrder.indexOf('box2');
-            if (currentIndex !== 1) {
-                // Remove box2 from current position
-                boxOrder.splice(currentIndex, 1);
-                // Insert at position 1
-                boxOrder.splice(1, 0, 'box2');
-            }
-            break;
-            
-        case 3:
-            // Move box3 to index 2
-            currentIndex = boxOrder.indexOf('box3');
-            if (currentIndex !== 2) {
-                // Remove box3 from current position
-                boxOrder.splice(currentIndex, 1);
-                // Insert at position 2
-                boxOrder.splice(2, 0, 'box3');
-            }
-            break;
-    }
+// Button 2 -> Move Box 2 to position 1 (second)
+document.querySelectorAll('.buttons button')[1].addEventListener('click', () => {
+    moveBox(1, box2);
+});
+
+// Button 3 -> Move Box 3 to position 2 (third)
+document.querySelectorAll('.buttons button')[2].addEventListener('click', () => {
+    moveBox(2, box3);
+});
+
+function moveBox(targetIndex, boxElement) {
+    // 1. Remove the box from its current position in the array
+    boxes = boxes.filter(b => b !== boxElement);
     
-    // Clear and re-render the game container with new order
+    // 2. Insert it at the new target position
+    boxes.splice(targetIndex, 0, boxElement);
+    
+    // 3. Clear the screen container
     gameContainer.innerHTML = '';
     
-    // Append boxes in the new order
-    boxOrder.forEach(id => {
-        const box = document.getElementById(id);
+    // 4. Put the boxes back on the screen in the new order
+    boxes.forEach(box => {
         gameContainer.appendChild(box);
     });
 }
