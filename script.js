@@ -2,10 +2,13 @@
 
 // Get references to all elements
 const buttons = document.querySelectorAll('.buttons button');
-const boxes = {
-    box1: document.getElementById('box1'),
-    box2: document.getElementById('box2'),
-    box3: document.getElementById('box3')
+const gameContainer = document.querySelector('.game-container');
+
+// Create object mapping buttons to their corresponding boxes
+const boxMap = {
+    1: document.getElementById('box1'),
+    2: document.getElementById('box2'),
+    3: document.getElementById('box3')
 };
 
 // Add click event listeners to buttons
@@ -15,28 +18,29 @@ buttons.forEach((button, index) => {
 
 // Function that handles button clicks
 function handleButtonClick(buttonNumber) {
-    // Get the current position of the clicked box
-    const box = boxes[`box${buttonNumber}`];
+    // Get the box element that corresponds to clicked button
+    const box = boxMap[buttonNumber];
     
-    // Calculate new positions based on screen size
-    const containerWidth = document.querySelector('.game-container').offsetWidth;
-    const boxWidth = box.offsetWidth;
+    // Remove box from its current position
+    gameContainer.removeChild(box);
     
-    // Move the box to a new position relative to its original place
+    // Insert box at new position based on button number
     switch(buttonNumber) {
         case 1:
-            box.style.transform = `translateX(-${containerWidth / 2}px)`;
+            // Move to first position
+            gameContainer.appendChild(box);
             break;
             
         case 2:
-            box.style.transform = `translateX(${boxWidth * 3}px)`;
+            // Move to second position between box1 and box3
+            const box1 = document.getElementById('box1');
+            const box3 = document.getElementById('box3');
+            gameContainer.insertBefore(box, box3);
             break;
             
         case 3:
-            box.style.transform = `translateX(${containerWidth}px)`;
+            // Move to third position
+            gameContainer.appendChild(box);
             break;
     }
-    
-    // Add a smooth transition effect
-    box.style.transition = 'transform 0.5s ease-in-out';
 }
