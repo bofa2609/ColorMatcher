@@ -1,40 +1,39 @@
 "use strict";
 
+// Get references to all elements
+const buttons = document.querySelectorAll('.buttons button');
 const gameContainer = document.querySelector('.game-container');
-const box1 = document.getElementById('box1');
-const box2 = document.getElementById('box2');
-const box3 = document.getElementById('box3');
 
-// Array holding the current order of the boxes
-let boxes = [box1, box2, box3];
+// Create object map for quick access
+const boxes = {
+    box1: document.getElementById('box1'),
+    box2: document.getElementById('box2'),
+    box3: document.getElementById('box3')
+};
 
-// Button 1 -> Swap Box 1 with whatever is in position 1
-document.querySelectorAll('.buttons button')[0].addEventListener('click', () => {
-    swapBox(0, box1);
+// Button click handlers
+buttons.forEach((button, index) => {
+    button.addEventListener('click', () => handleButtonClick(index + 1));
 });
 
-// Button 2 -> Swap Box 2 with whatever is in position 2
-document.querySelectorAll('.buttons button')[1].addEventListener('click', () => {
-    swapBox(1, box2);
-});
+function handleButtonClick(buttonNumber) {
+    // Get the box element for the clicked button
+    const currentBox = boxes[`box${buttonNumber}`];
 
-// Button 3 -> Swap Box 3 with whatever is in position 3
-document.querySelectorAll('.buttons button')[2].addEventListener('click', () => {
-    swapBox(2, box3);
-});
+    // Get all child elements (boxes)
+    const containerChildren = Array.from(gameContainer.children);
 
-function swapBox(targetIndex, boxElement) {
-    const currentIndex = boxes.indexOf(boxElement);
-    
-    // If the box is already in the target position, do nothing
-    if (currentIndex === targetIndex) return; 
-    
-    // Swap the box with the one currently in the target position
-    const elementAtTarget = boxes[targetIndex];
-    boxes[targetIndex] = boxElement;
-    boxes[currentIndex] = elementAtTarget;
+    // Remove the current box from its current position
+    const currentIndex = containerChildren.indexOf(currentBox);
+    if (currentIndex !== -1) {
+        gameContainer.removeChild(containerChildren[currentIndex]);
+    }
 
-    // Clear and redraw the container
-    gameContainer.innerHTML = '';
-    boxes.forEach(box => gameContainer.appendChild(box));
+    // Determine target index based on button number
+    const targetIndex = buttonNumber === 2 ? 1 : buttonNumber - 1;
+
+    // Insert the box at the correct position
+    if (targetIndex <= containerChildren.length) {
+        gameContainer.insertBefore(currentBox, containerChildren[targetIndex] || null);
+    }
 }
